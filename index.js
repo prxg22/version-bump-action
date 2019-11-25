@@ -23,7 +23,16 @@ const checkEvent = () => {
 const getPullRequestVersion = async () => {
   const { payload } = github.context
 
-  core.debug(JSON.stringify(payload.pull_request))
+  const { labels } = payload.pull_request
+
+  const version = VERSIONS.reduce((acc, searched) => {
+    const label = labels.find(({ name }) => searched === name.toLowerCase())
+    return label
+  }, undefined)
+
+  if (!version) throw Error('no semver label found!')
+
+  return version
 }
 
 const run = async () => {
