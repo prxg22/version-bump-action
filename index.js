@@ -25,10 +25,8 @@ const getPullRequestVersion = () => {
 
   const { labels } = payload.pull_request
 
-  core.debug(JSON.stringify(labels))
   const version = VERSIONS.reduce((found, searched) => {
     const label = labels.find(({ name }) => {
-      core.debug(`searched: ${searched}, found: ${found}, label: ${name}`)
       return searched === name.toLowerCase()
     })
     return (label && label.name) || found
@@ -43,10 +41,15 @@ const run = async () => {
   try {
     checkEvent()
     const version = getPullRequestVersion()
-    core.debug(`version ${version || 'not found!'}`)
   } catch (e) {
     core.warning(e.message)
     return
+  }
+
+  try {
+    await exec(`yarn version --${version} --no-git-tag-version`)
+  } catch (e) {
+    core.setFailed(e.message)  
   }
 }
 
