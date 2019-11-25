@@ -22,7 +22,7 @@ const checkEvent = () => {
 
 const run = async () => {
   try {
-    checkEvent
+    checkEvent()
   } catch (e) {
     core.warning(e.message)
     return
