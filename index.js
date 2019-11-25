@@ -31,7 +31,7 @@ const getPullRequestVersion = () => {
       core.debug(`searched: ${searched}, found: ${found}, label: ${name}`)
       return searched === name.toLowerCase()
     })
-    return label
+    return label.name
   }, undefined)
 
   if (!version) throw Error('no semver label found!')
