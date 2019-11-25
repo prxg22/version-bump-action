@@ -1,0 +1,8 @@
+on: [push]
+
+jobs:
+  print-github-context:
+    runs-on: ubuntu-latest
+    steps:
+    - name: echo github context
+      uses: ./
