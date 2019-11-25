@@ -5,25 +5,30 @@ const { exec } = require('@actions/exec')
 core.debug(github.context.eventName)
 core.debug(github.context.action)
 core.debug(JSON.stringify(github.context))
-// a
-// const { GITHUB_TOKEN } = process.env
-// const VERSIONS = ['patch', ]
-// const EVENT = 'pull_request'
-// const EVENT_TYPE = 'labeled'
-//
-// const checkActionEvent = () => {
-//   const { pull_request } = github.context.payload || {}
-//
-//   if (
-//     pull_request
-//     && !pull_request.action
-//     && pull_request.action !== 'labeled'
-//   ) return
-//
-//   throw Error('Event not supported')
-// }
-//
-//
-// const run = async () => {
-//
-// }
+
+const { GITHUB_TOKEN } = process.env
+const VERSIONS = ['patch', ]
+const EVENT = 'pull_request'
+const EVENT_TYPE = 'labeled'
+
+const checkEvent = () => {
+  const { eventName, payload } = github.context
+
+  if (
+    eventName === EVENT
+    && !payload.action
+    && payload.action !== EVENT_TYPE
+  ) return
+
+  throw Error('Event not supported')
+}
+
+
+const run = async () => {
+  try {
+    checkEvent
+  } catch (e) {
+    core.warning(e.message)
+    return
+  }
+}
