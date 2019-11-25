@@ -1,6 +1,7 @@
 on:
   pull_request:
-    types: [labeled]
+    branches:
+      pull-request-test
 
 jobs:
   print-github-context:
