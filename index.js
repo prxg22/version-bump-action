@@ -2,7 +2,8 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const { exec } = require('@actions/exec')
 
-core.debug(JSON.stringify(github.context.payload.event_name))
+core.debug(JSON.stringify(github.context))
+core.debug(JSON.stringify(github.context.payload))
 // const { GITHUB_TOKEN } = process.env
 // const VERSIONS = ['patch', ]
 // const EVENT = 'pull_request'
