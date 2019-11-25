@@ -25,8 +25,12 @@ const getPullRequestVersion = () => {
 
   const { labels } = payload.pull_request
 
-  const version = VERSIONS.reduce((acc, searched) => {
-    const label = labels.find(({ name }) => searched === name.toLowerCase())
+  core.debug(JSON.stringify(labels))
+  const version = VERSIONS.reduce((found, searched) => {
+    const label = labels.find(({ name }) => {
+      core.debug(`searched: ${searched}, found: ${found}, label: ${name}`)
+      return searched === name.toLowerCase()
+    })
     return label
   }, undefined)
 
