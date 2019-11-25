@@ -23,7 +23,7 @@ const checkEvent = () => {
 const getPullRequestVersion = async () => {
   const { payload } = github.context
 
-  core.debug(JSON.stringfy(payload.pull_request))
+  core.debug(JSON.stringify(payload.pull_request))
 }
 
 const run = async () => {
