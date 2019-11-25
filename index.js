@@ -10,6 +10,8 @@ const EVENT_TYPE = 'labeled'
 const checkEvent = () => {
   const { eventName, payload } = github.context
 
+  core.debug(eventName, payload.action)
+  
   if (
     eventName === EVENT
     && !payload.action
