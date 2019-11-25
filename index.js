@@ -2,6 +2,9 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const { exec } = require('@actions/exec')
 
+core.warning('new warning');
+core.error('new error');
+core.debug('new debug')
 core.debug(github.context)
 // const { GITHUB_TOKEN } = process.env
 // const VERSIONS = ['patch', ]
