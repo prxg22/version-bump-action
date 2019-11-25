@@ -1,0 +1,6 @@
+name: 'automate-release'
+description: 'bump package.json version and commit it'
+
+runs:
+  using: 'node12'
+  main: 'index.js'
