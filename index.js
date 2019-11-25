@@ -2,6 +2,8 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const { exec } = require('@actions/exec')
 
+core.debug(github.context.eventName)
+core.debug(github.context.action)
 core.debug(JSON.stringify(github.context))
 // a
 // const { GITHUB_TOKEN } = process.env
