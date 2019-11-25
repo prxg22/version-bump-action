@@ -20,7 +20,7 @@ const checkEvent = () => {
 }
 
 
-const getPullRequestVersion = async () => {
+const getPullRequestVersion = () => {
   const { payload } = github.context
 
   const { labels } = payload.pull_request
@@ -38,7 +38,8 @@ const getPullRequestVersion = async () => {
 const run = async () => {
   try {
     checkEvent()
-    const version = await getPullRequestVersion()
+    const version = getPullRequestVersion()
+    core.debug(`version ${version || 'not found!'}`)
   } catch (e) {
     core.warning(e.message)
     return
