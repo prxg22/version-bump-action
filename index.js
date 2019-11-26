@@ -49,7 +49,7 @@ const validatePullRequest = () => {
   const { payload } = context;
 
   const prNumber = payload.number
-  const pull_request = octokit.pull_request(context.repo, prNumber)
+  const pull_request = octokit.pulls.pull_request(context.repo, prNumber)
 
   debugJSON(pull_request)
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
