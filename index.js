@@ -4,6 +4,9 @@ const { exec } = require("@actions/exec");
 
 const EVENT = "pull_request";
 
+const githubToken = core.getInput("github-token");
+const octokit = new github.GitHub(githubToken);
+
 const checkEvent = (baseBranch, headBranch) => {
   const { eventName, payload } = github.context;
   const { pull_request } = payload;
@@ -21,9 +24,8 @@ const checkEvent = (baseBranch, headBranch) => {
   throw Error("Event not supported");
 };
 
-const getLastVersion = async (baseBranch, githubToken) => {
+const getLastVersion = async baseBranch => {
   const { context } = github;
-  const octokit = new github.GitHub(githubToken);
 
   const pkgFile = await octokit.repos.getContents({
     ...context.repo,
@@ -44,11 +46,16 @@ const validatePullRequest = () => {
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
+const getNextBump = () => {
+  const { context } = github;
+  const { eventName, payload } = context;
+  core.debug(JSON.stringify({context, payload}))
+  // const commits = octokit.pulls.pull_request_commits(context.repo, context.number);
+};
 
 const run = async () => {
   const baseBranch = core.getInput("base-branch");
   const headBranch = core.getInput("head-branch");
-  const githubToken = core.getInput("github-token");
 
   try {
     checkEvent(baseBranch, headBranch);
@@ -59,8 +66,8 @@ const run = async () => {
 
   try {
     validatePullRequest();
-    // const version = await getLastVersion(baseBranch, githubToken);
-    await getLastVersion(baseBranch, githubToken);
+    const version = await getLastVersion(baseBranch);
+    const bump = getNextBump();
   } catch (e) {
     core.error(e.message);
     core.setFailed(`Action failed due: ${e}`);
