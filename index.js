@@ -27,7 +27,7 @@ const getLastVersion = async (baseBranch, githubToken) => {
   const { context } = github;
   const octokit = new github.GitHub(githubToken);
 
-  const pkgFile = await octokit.repos.getContet({
+  const pkgFile = await octokit.repos.getContents({
     ...context.repo,
     path: "package.json"
   });
