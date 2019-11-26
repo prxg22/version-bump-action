@@ -79,10 +79,10 @@ const getBumpIncrement = async () => {
   return release;
 };
 
-const bump = (lastVersion, release) => {
+const bump = async (lastVersion, release) => {
   const version = semver.inc(lastVersion, release);
 
-  exec(`yarn version --new-version ${version} --no-git-tag-version`);
+  await exec(`yarn version --new-version ${version} --no-git-tag-version`);
   const file = fs.readFileSync("package.json");
   const { version: newVersion } = JSON.parse(file.toString());
 
@@ -111,7 +111,7 @@ const run = async () => {
       return;
     }
 
-    bump(lastVersion, release);
+    await bump(lastVersion, release);
   } catch (e) {
     core.error(e.message);
     core.setFailed(`Action failed due: ${e}`);
