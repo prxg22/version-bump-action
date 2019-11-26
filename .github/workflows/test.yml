@@ -13,7 +13,7 @@ jobs:
         node-version: 12.x
     - name: build
       run: yarn --prod
-    - name: echo github context
+    - name: bump version and merge it on develop
       uses: ./
       with:
         base-branch: master
