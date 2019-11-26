@@ -71,7 +71,7 @@ const getBump = async () => {
 
   const messages = commits.map(({ commit }) => commit.message)
 
-  debugJSON(messages);
+  debugJSON({ commits, messages });
 };
 
 const run = async () => {
