@@ -9,6 +9,8 @@ const octokit = new github.GitHub(githubToken);
 
 const debugJSON = (obj) => core.debug(JSON.stringify(obj))
 
+debugJSON(github.context)
+
 const checkEvent = (baseBranch, headBranch) => {
   const { eventName, payload } = github.context;
   const { pull_request } = payload;
@@ -45,7 +47,6 @@ const getLastVersion = async baseBranch => {
 const validatePullRequest = () => {
   const { pull_request } = github.context.payload;
 
-  debugJSON(pull_request)
   core.debug(`mergeable ${pull_request.mergeable}`)
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
