@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@actions/core@^1.2.0":
+"@actions/core@1.2.x":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.2.0.tgz#aa5f52b26c362c821d41557e599371a42f6c0b3d"
   integrity sha512-ZKdyhlSlyz38S6YFfPnyNgCDZuAF2T0Qv5eHflNWytPS8Qjvz39bZFMry9Bb/dpSnqWcNeav5yM2CTYpJeY+Dw==
 
-"@actions/exec@^1.0.1":
+"@actions/exec@1.0.x":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@actions/exec/-/exec-1.0.1.tgz#1624b541165697e7008d7c87bc1f69f191263c6c"
   integrity sha512-nvFkxwiicvpzNiCBF4wFBDfnBvi7xp/as7LE1hBxBxKG2L29+gkIPBiLKMVORL+Hg3JNf07AKRfl0V5djoypjQ==
 
-"@actions/github@^1.1.0":
+"@actions/github@1.1.x":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@actions/github/-/github-1.1.0.tgz#06f34e6b0cf07eb2b3641de3e680dbfae6bcd400"
   integrity sha512-cHf6PyoNMdei13jEdGPhKprIMFmjVVW/dnM5/9QmQDJ1ZTaGVyezUSCUIC/ySNLRvDUpeFwPYMdThSEJldSbUw==
@@ -826,7 +826,7 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-recommended-bump@1.5.1:
+recommended-bump@1.5.x:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/recommended-bump/-/recommended-bump-1.5.1.tgz#49a63b2611327c4f465b59acd490c533b4baee73"
   integrity sha512-PImPGEF5epnAJGS2okOvuDTv5aXyYnfu2j3pM8TVLp0jhhkINfWBQc50yeUBppm3fRjNB3sREH+hAGXkaASHcw==
