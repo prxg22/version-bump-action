@@ -28,11 +28,11 @@ const getLastVersion = async (baseBranch, githubToken) => {
     path: "package.json"
   });
 
-  const pkg = JSON.parse(pkgFile.toString());
+  const { version } = JSON.parse(pkgFile.toString());
 
   core.debug(pkg);
 
-  return pkg.version;
+  return version;
 };
 
 const run = async () => {
