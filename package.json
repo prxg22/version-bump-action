@@ -8,7 +8,8 @@
   "dependencies": {
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.0.1",
-    "@actions/github": "^1.1.0"
+    "@actions/github": "^1.1.0",
+    "recommended-bump": "^1.5.0"
   },
   "devDependencies": {
     "eslint": "^6.7.1"

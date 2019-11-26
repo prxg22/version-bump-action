@@ -1,5 +1,6 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
+const recommendedBump = require("recommended-bump");
 const { exec } = require("@actions/exec");
 
 const EVENT = "pull_request";
@@ -67,11 +68,13 @@ const getBump = async () => {
   const { data: commits } = await octokit.pulls.listCommits({
     ...context.repo,
     pull_number
-  })
+  });
 
-  const messages = commits.map(({ commit }) => commit.message)
+  const messages = commits.map(({ commit }) => commit.message);
 
-  debugJSON({ commits, messages });
+  const { increment, isBreaking, ...recommended } = recommendedBump(messages);
+
+  debugJSON({increment, isBreaking, recommended: recommended[increment]})
 };
 
 const run = async () => {
@@ -87,7 +90,7 @@ const run = async () => {
 
   try {
     await validatePullRequest();
-    const bump = await getBump()
+    const bump = await getBump();
     const version = await getLastVersion(baseBranch);
   } catch (e) {
     core.error(e.message);
