@@ -1,7 +1,4 @@
-on:
-  pull_request:
-    branches:
-      pull-request-test
+on: pull_request
 
 jobs:
   print-github-context:
