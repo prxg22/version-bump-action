@@ -11,7 +11,7 @@ const checkEvent = (baseBranch, headBranch) => {
   const prBaseBranch = pull_request.base.ref;
   const prHeadBranch = pull_request.head.ref;
 
-  core.debug(eventName, prBaseBranch, prHeadBranch);
+  core.debug(`${eventName}, ${prBaseBranch}, ${prHeadBranch}`);
 
   if (
     eventName === EVENT &&
@@ -29,11 +29,14 @@ const getLastVersion = async (baseBranch, githubToken) => {
 
   const pkgFile = await octokit.repos.getContents({
     ...context.repo,
+    ref: baseBranch,
     path: "package.json"
   });
 
   core.debug(pkgFile)
   core.debug(pkgFile.toString())
+  core.debug(pkgFile.version)
+
   const { version } = JSON.parse(pkgFile.toString());
 
   return version;
