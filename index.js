@@ -4,7 +4,8 @@ const { exec } = require("@actions/exec");
 
 const EVENT = "pull_request";
 
-const checkEvent = () => {
+const checkEvent = (baseBranch, headBranch) => {
+  core.debug(JSON.stringify(payload))
   const { eventName, payload } = github.context;
   const prBaseBranch = payload.base.ref;
   const prHeadBranch = payload.head.ref;
@@ -41,7 +42,7 @@ const run = async () => {
   const githubToken = core.getInput("github-token");
 
   try {
-    checkEvent();
+    checkEvent(baseBranch, headBranch);
   } catch (e) {
     core.warning(e.message);
     return;
@@ -49,7 +50,10 @@ const run = async () => {
 
   try {
     const version = await getLastVersion(baseBranch, githubToken);
-  } catch (e) {}
+  } catch (e) {
+    core.error(e.message)
+    core.setFailed(`Action failed due: ${e}`)
+  }
 };
 
 run();
