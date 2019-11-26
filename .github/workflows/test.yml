@@ -15,3 +15,7 @@ jobs:
       run: yarn --prod
     - name: echo github context
       uses: ./
+      with:
+        base-branch: master
+        head-branch: pull-request-test
+        github-token: ${{secrets.GITHUB_TOKEN}}

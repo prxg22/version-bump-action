@@ -1,6 +1,21 @@
 name: 'automate-release'
 description: 'bump package.json version and commit it'
 
+inputs:
+  base-branch:
+    description: 'branch which release will be merged'
+    required: true
+    default: 'master'
+
+  head-branch:
+    description: 'branch to be bumped'
+    required: true
+    default: 'develop'
+
+  github-token:
+    description: 'github token with access to merge in release-branch'
+    required: true
+
 runs:
   using: 'node12'
   main: 'index.js'
