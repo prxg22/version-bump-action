@@ -68,7 +68,7 @@ const run = async () => {
 
 
   try {
-    validatePullRequest(prNumber);
+    validatePullRequest();
     const version = await getLastVersion(baseBranch);
   } catch (e) {
     core.error(e.message);
