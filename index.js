@@ -75,6 +75,7 @@ const getBump = async () => {
   const { increment, isBreaking, ...recommended } = recommendedBump(messages);
 
   debugJSON({increment, isBreaking, recommended: recommended[increment]})
+  return increment
 };
 
 const run = async () => {
