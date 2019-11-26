@@ -2,7 +2,6 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const recommendedBump = require("recommended-bump");
 const { exec } = require("@actions/exec");
-// const fs = require("fs");
 const semver = require("semver");
 
 const EVENT = "pull_request";
@@ -12,7 +11,8 @@ const octokit = new github.GitHub(githubToken);
 
 const debugJSON = obj => core.debug(JSON.stringify(obj));
 
-// debugJSON(github.context);
+debugJSON(github.context);
+debugJSON(process.env);
 
 const checkEvent = (base, head) => {
   const { eventName, payload } = github.context;
@@ -26,7 +26,7 @@ const checkEvent = (base, head) => {
   throw Error("Event not supported");
 };
 
-const getLastVersion = async (base, initial = '0.0.0') => {
+const getLastVersion = async (base, initial = "0.0.0") => {
   const { context } = github;
 
   try {
@@ -42,8 +42,8 @@ const getLastVersion = async (base, initial = '0.0.0') => {
 
     return version;
   } catch (e) {
-    if (e.toString() === 'HttpError: Not Found') return initial
-    throw e
+    if (e.toString() === "HttpError: Not Found") return initial;
+    throw e;
   }
 };
 
@@ -88,12 +88,14 @@ const bump = async (lastVersion, release) => {
     core.error(e);
     debugJSON(e);
   }
-  // const file = fs.readFileSync("package.json");
-  // const { version: newVersion } = JSON.parse(file.toString());
+};
 
-  // core.debug(
-  // `lastVersion ${lastVersion} - intended version ${version} - newVersion: ${newVersion}`
-  // );
+const commitBumpedVersion = async version => {
+  await exec(`git config --local user.email "action@github.com"`);
+  await exec(`git config --local user.name "GitHub Action"`);
+  await exec(`git commit -m "Release version ${version}" -a`);
+  const remote_repo =
+    "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git";
 };
 
 const run = async () => {
@@ -124,7 +126,7 @@ const run = async () => {
     await bump(lastVersion, release);
     core.debug(`bumped!`);
   } catch (e) {
-    debugJSON(e)
+    debugJSON(e);
     core.setFailed(`Action failed due: ${e}`);
   }
 };
