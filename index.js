@@ -3,7 +3,7 @@ const github = require("@actions/github");
 const recommendedBump = require("recommended-bump");
 const { exec } = require("@actions/exec");
 const semver = require("semver");
-
+const fs = require("fs");
 const EVENT = "pull_request";
 
 const githubToken = core.getInput("github-token");
@@ -84,18 +84,28 @@ const bump = async (lastVersion, release) => {
 
   try {
     await exec(`yarn version --new-version ${version} --no-git-tag-version`);
+    const file = fs.readFileSync("package.json");
+    const { version: bumped } = JSON.parse(file.toString());
+
+    return bumped;
   } catch (e) {
     core.error(e);
     debugJSON(e);
   }
 };
 
-const commitBumpedVersion = async version => {
+const pushBumpedVersion = async (version, head) => {
+  const actor = process.env.GITHUB_ACTOR;
+  const repository = process.env.GITHUB_REPOSITORY;
+
   await exec(`git config --local user.email "action@github.com"`);
   await exec(`git config --local user.name "GitHub Action"`);
   await exec(`git commit -m "Release version ${version}" -a`);
-  const remote_repo =
-    "https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git";
+
+  const remote =
+    `https://${actor}:${githubToken}@github.com/${repository}.git`;
+
+  await exec(`git push "${remote}" HEAD:${head}`)
 };
 
 const run = async () => {
@@ -123,8 +133,9 @@ const run = async () => {
       return;
     }
 
-    await bump(lastVersion, release);
-    core.debug(`bumped!`);
+    const version = await bump(lastVersion, release);
+    core.debug(`bumped to version ${version}!`);
+    await pushBumpedVersion(version, head);
   } catch (e) {
     debugJSON(e);
     core.setFailed(`Action failed due: ${e}`);
