@@ -18,6 +18,20 @@ const checkEvent = () => {
   throw Error('Event not supported')
 }
 
+const getLastVersion = (baseBranch, githubToken) => {
+  const { context } = github
+  const octokit = new github.GitHub(githubToken)
+
+  const pkgFile = await octokit.repos.getContet({
+    ...context.repo
+    path: 'package.json'
+  })
+
+  const pkg = JSON.parse(pkgFile.toString())
+
+  core.debug(pkg)
+}
+
 const run = async () => {
   const baseBranch = core.getInput('base-branch');
   const headBranch = core.getInput('head-branch');
@@ -28,6 +42,13 @@ const run = async () => {
   } catch (e) {
     core.warning(e.message)
     return
+  }
+
+  try {
+
+  } catch (e) {
+
+
   }
 }
 
