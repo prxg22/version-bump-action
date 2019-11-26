@@ -1,6 +1,6 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { exec } = require("@actions/exec");
+// const { exec } = require("@actions/exec");
 
 const EVENT = "pull_request";
 
@@ -10,8 +10,6 @@ const checkEvent = (baseBranch, headBranch) => {
 
   const prBaseBranch = pull_request.base.ref;
   const prHeadBranch = pull_request.head.ref;
-
-  core.debug(`${eventName}, ${prBaseBranch}, ${prHeadBranch}`);
 
   if (
     eventName === EVENT &&
@@ -33,14 +31,19 @@ const getLastVersion = async (baseBranch, githubToken) => {
     path: "package.json"
   });
 
-  const content = Buffer.from(pkgFile.data.content, 'base64')
-  core.debug(content)
+  const content = Buffer.from(pkgFile.data.content, "base64");
 
   const { version } = JSON.parse(content);
-  core.debug(version)
 
   return version;
 };
+
+const validatePullRequest = () => {
+  const { pull_request } = github.context.payload;
+
+  if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
+};
+
 
 const run = async () => {
   const baseBranch = core.getInput("base-branch");
@@ -55,8 +58,9 @@ const run = async () => {
   }
 
   try {
-    const version = await getLastVersion(baseBranch, githubToken);
-    core.debug(version)
+    validatePullRequest();
+    // const version = await getLastVersion(baseBranch, githubToken);
+    await getLastVersion(baseBranch, githubToken);
   } catch (e) {
     core.error(e.message);
     core.setFailed(`Action failed due: ${e}`);
