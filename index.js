@@ -5,8 +5,8 @@ const { exec } = require("@actions/exec");
 const EVENT = "pull_request";
 
 const checkEvent = (baseBranch, headBranch) => {
-  core.debug(JSON.stringify(payload))
   const { eventName, payload } = github.context;
+  core.debug(JSON.stringify(payload))
   const prBaseBranch = payload.base.ref;
   const prHeadBranch = payload.head.ref;
 
