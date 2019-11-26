@@ -11,7 +11,7 @@ jobs:
     - name: build
       run: yarn --prod
     - name: bump version and merge it on develop
-      uses: prxg22/version-bump-action
+      uses: prxg22/version-bump-action@master
       with:
         base-branch: master
         head-branch: pull-request-test
