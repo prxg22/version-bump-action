@@ -2,6 +2,8 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const recommendedBump = require("recommended-bump");
 const { exec } = require("@actions/exec");
+const fs = require("fs");
+const semver = require("semver");
 
 const EVENT = "pull_request";
 
@@ -59,7 +61,7 @@ const validatePullRequest = async () => {
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
-const getBump = async () => {
+const getBumpIncrement = async () => {
   const { context } = github;
   const { payload } = context;
 
@@ -74,8 +76,20 @@ const getBump = async () => {
 
   const { increment, isBreaking, ...recommended } = recommendedBump(messages);
 
-  debugJSON({increment, isBreaking, recommended: recommended[increment]})
-  return increment
+  return increment;
+};
+
+const bump = (lastVersion, release) => {
+  const file = fs.readFileSync("package.json");
+  const version = semver.inc(lastVersion, release);
+
+  exec(`yarn version --new-version ${version} --no-git-tag-version`);
+  const file = fs.readFileSync("package.json");
+  const { version: newVersion } = JSON.parse(file.toString());
+
+  core.debug(
+    `lastVersion ${lastVersion} - intended version ${version} - newVersion: ${newVersion}`
+  );
 };
 
 const run = async () => {
@@ -91,8 +105,14 @@ const run = async () => {
 
   try {
     await validatePullRequest();
-    const bump = await getBump();
-    const version = await getLastVersion(baseBranch);
+    const release = await getBumpIncrement();
+    const lastVersion = await getLastVersion(baseBranch);
+    if (!increment) {
+      core.warning("no version increment needed!");
+      return;
+    }
+
+    bump(lastVersion, release);
   } catch (e) {
     core.error(e.message);
     core.setFailed(`Action failed due: ${e}`);
