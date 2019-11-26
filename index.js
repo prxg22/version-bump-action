@@ -49,7 +49,7 @@ const validatePullRequest = async () => {
   const { payload } = context;
 
   const pull_number = payload.number;
-  const pull_request = await octokit.pulls.get({
+  const { data: pull_request } = await octokit.pulls.get({
     ...context.repo,
     pull_number
   });
