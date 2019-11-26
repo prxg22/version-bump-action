@@ -6,9 +6,12 @@ const EVENT = "pull_request";
 
 const checkEvent = (baseBranch, headBranch) => {
   const { eventName, payload } = github.context;
-  core.debug(JSON.stringify(payload))
-  const prBaseBranch = payload.base.ref;
-  const prHeadBranch = payload.head.ref;
+  const { pull_request } = payload;
+
+  const prBaseBranch = pull_request.base.ref;
+  const prHeadBranch = pull_request.head.ref;
+
+  core.debug(eventName, prBaseBranch, prHeadBranch);
 
   if (
     eventName === EVENT &&
@@ -32,6 +35,7 @@ const getLastVersion = async (baseBranch, githubToken) => {
   const { version } = JSON.parse(pkgFile.toString());
 
   core.debug(pkg);
+  core.debug(pkg.toString());
 
   return version;
 };
@@ -50,9 +54,10 @@ const run = async () => {
 
   try {
     const version = await getLastVersion(baseBranch, githubToken);
+    core.debug(version)
   } catch (e) {
-    core.error(e.message)
-    core.setFailed(`Action failed due: ${e}`)
+    core.error(e.message);
+    core.setFailed(`Action failed due: ${e}`);
   }
 };
 
