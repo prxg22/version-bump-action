@@ -74,13 +74,12 @@ const getBumpIncrement = async () => {
 
   const messages = commits.map(({ commit }) => commit.message);
 
-  const { increment, isBreaking, ...recommended } = recommendedBump(messages);
+  const { increment: release } = recommendedBump(messages);
 
-  return increment;
+  return release;
 };
 
 const bump = (lastVersion, release) => {
-  const file = fs.readFileSync("package.json");
   const version = semver.inc(lastVersion, release);
 
   exec(`yarn version --new-version ${version} --no-git-tag-version`);
@@ -107,8 +106,8 @@ const run = async () => {
     await validatePullRequest();
     const release = await getBumpIncrement();
     const lastVersion = await getLastVersion(baseBranch);
-    if (!increment) {
-      core.warning("no version increment needed!");
+    if (!release) {
+      core.warning("no version release needed!");
       return;
     }
 
