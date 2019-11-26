@@ -18,7 +18,7 @@ const checkEvent = () => {
   throw Error('Event not supported')
 }
 
-const getLastVersion = (baseBranch, githubToken) => {
+const getLastVersion = async (baseBranch, githubToken) => {
   const { context } = github
   const octokit = new github.GitHub(githubToken)
 
@@ -45,7 +45,7 @@ const run = async () => {
   }
 
   try {
-
+    const version = await getLastVersion(baseBranch, githubToken)
   } catch (e) {
 
 
