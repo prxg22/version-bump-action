@@ -45,17 +45,14 @@ const getLastVersion = async baseBranch => {
 };
 
 const validatePullRequest = () => {
-  const { pull_request } = github.context.payload;
-
-  core.debug(`mergeable ${pull_request.mergeable}`)
-  if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
-};
-
-const getNextBump = () => {
   const { context } = github;
-  const { eventName, payload } = context;
-  debugJSON({context, payload})
-  // const commits = octokit.pulls.pull_request_commits(context.repo, context.number);
+  const { payload } = context;
+
+  const prNumber = payload.number
+  const pull_request = octokit.pull_request(context.repo, prNumber)
+
+  debugJSON(pull_request)
+  if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
 const run = async () => {
@@ -69,10 +66,10 @@ const run = async () => {
     return;
   }
 
+
   try {
-    validatePullRequest();
+    validatePullRequest(prNumber);
     const version = await getLastVersion(baseBranch);
-    const bump = getNextBump();
   } catch (e) {
     core.error(e.message);
     core.setFailed(`Action failed due: ${e}`);
