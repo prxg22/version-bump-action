@@ -32,10 +32,9 @@ const getLastVersion = async (baseBranch, githubToken) => {
     path: "package.json"
   });
 
+  core.debug(pkgFile)
+  core.debug(pkgFile.toString())
   const { version } = JSON.parse(pkgFile.toString());
-
-  core.debug(pkg);
-  core.debug(pkg.toString());
 
   return version;
 };
