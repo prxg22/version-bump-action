@@ -61,7 +61,7 @@ const validatePullRequest = async () => {
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
-const getBumpIncrement = async () => {
+const getRelease = async () => {
   const { context } = github;
   const { payload } = context;
 
@@ -109,14 +109,19 @@ const run = async () => {
 
   try {
     await validatePullRequest();
-    const release = await getBumpIncrement();
+    core.debug('pull request validated')
+    const release = await getRelease();
+    core.debug(`got release: ${release}`)
     const lastVersion = await getLastVersion(baseBranch);
+    core.debug(`got last version: ${lastVersion}`)
+
     if (!release) {
       core.warning("no version release needed!");
       return;
     }
 
     await bump(lastVersion, release);
+    core.debug(`bumped!`)
   } catch (e) {
     core.error(e.message);
     core.setFailed(`Action failed due: ${e}`);
