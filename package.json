@@ -1,0 +1,8 @@
+{
+  "name": "version-bump-action",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:prxg22/version-bump-action.git",
+  "author": "paulo giusti <paulo.giusti@lemon.energy>",
+  "license": "MIT"
+}
