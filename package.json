@@ -2,7 +2,17 @@
   "name": "version-bump-action",
   "version": "1.0.0",
   "main": "index.js",
+  "license": "MIT",
   "repository": "git@github.com:prxg22/version-bump-action.git",
-  "author": "paulo giusti <paulo.giusti@lemon.energy>",
-  "license": "MIT"
+  "author": "prxg22 <prxg22@gmail.com>",
+  "dependencies": {
+    "@actions/core": "1.2.x",
+    "@actions/exec": "1.0.x",
+    "@actions/github": "1.1.x",
+    "recommended-bump": "1.5.x",
+    "semver": "6.3.x"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.1"
+  }
 }
