@@ -58,6 +58,22 @@ const validatePullRequest = async () => {
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
+const getBump = async () => {
+  const { context } = github;
+  const { payload } = context;
+
+  const pull_number = payload.number;
+
+  const { data: commits } = await octokit.pulls.listCommits({
+    ...context.repo,
+    pull_number
+  })
+
+  const messages = commits.map(({ commit }) => commit.message)
+
+  debugJSON(messages);
+};
+
 const run = async () => {
   const baseBranch = core.getInput("base-branch");
   const headBranch = core.getInput("head-branch");
@@ -71,6 +87,7 @@ const run = async () => {
 
   try {
     await validatePullRequest();
+    const bump = await getBump()
     const version = await getLastVersion(baseBranch);
   } catch (e) {
     core.error(e.message);
