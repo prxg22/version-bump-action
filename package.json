@@ -1,6 +1,6 @@
 {
   "name": "automate-release",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
@@ -9,18 +9,5 @@
     "@actions/github": "^1.1.0"
   },
   "repository": "git@github.com:prxg22/version-bump-action.git",
-  "author": "paulo giusti <paulo.giusti@lemon.energy>",
-  "devDependencies": {
-    "@semantic-release/changelog": "3.0.x",
-    "semantic-release": "15.13.x"
-  },
-  "release": {
-    "branch": "pull-request-test",
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      ["@semantic-release/changelog", {
-        "changelogFile": "docs/CHANGELOG.md"
-      }]
-    ]
-  }
+  "author": "paulo giusti <paulo.giusti@lemon.energy>"
 }
