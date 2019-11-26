@@ -14,5 +14,5 @@ jobs:
       uses: ./
       with:
         base-branch: master
-        head-branch: pull-request-test2
+        head-branch: pull-request-test
         github-token: ${{secrets.GITHUB_TOKEN}}
