@@ -26,20 +26,25 @@ const checkEvent = (base, head) => {
   throw Error("Event not supported");
 };
 
-const getLastVersion = async base => {
+const getLastVersion = async (base, initial = '0.0.0') => {
   const { context } = github;
 
-  const pkgFile = await octokit.repos.getContents({
-    ...context.repo,
-    ref: base,
-    path: "package.json"
-  });
+  try {
+    const pkgFile = await octokit.repos.getContents({
+      ...context.repo,
+      ref: base,
+      path: "package.json"
+    });
 
-  const content = Buffer.from(pkgFile.data.content, "base64");
+    const content = Buffer.from(pkgFile.data.content, "base64");
 
-  const { version } = JSON.parse(content);
+    const { version } = JSON.parse(content);
 
-  return version;
+    return version;
+  } catch (e) {
+    if (e.toString() === 'HttpError: Not Found') return initial
+    throw e
+  }
 };
 
 const validatePullRequest = async () => {
@@ -94,6 +99,7 @@ const bump = async (lastVersion, release) => {
 const run = async () => {
   const base = core.getInput("base-branch");
   const head = core.getInput("head-branch");
+  const initialVersion = core.getInput("initial-version");
 
   try {
     checkEvent(base, head);
@@ -107,7 +113,7 @@ const run = async () => {
     core.debug("pull request validated");
     const release = await getRelease();
     core.debug(`got release: ${release}`);
-    const lastVersion = await getLastVersion(base);
+    const lastVersion = await getLastVersion(base, initialVersion);
     core.debug(`got last version: ${lastVersion}`);
 
     if (!release) {

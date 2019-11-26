@@ -17,6 +17,10 @@ inputs:
     description: 'github token with access to merge in release-branch'
     required: true
 
+  initial-version:
+    description: 'initial version used if base-branch doesn`t have package.json'
+    default: '0.0.0'
+
 runs:
   using: 'node12'
   main: 'index.js'
