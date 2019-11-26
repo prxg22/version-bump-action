@@ -7,9 +7,9 @@ const EVENT = "pull_request";
 const githubToken = core.getInput("github-token");
 const octokit = new github.GitHub(githubToken);
 
-const debugJSON = (obj) => core.debug(JSON.stringify(obj))
+const debugJSON = obj => core.debug(JSON.stringify(obj));
 
-debugJSON(github.context)
+debugJSON(github.context);
 
 const checkEvent = (baseBranch, headBranch) => {
   const { eventName, payload } = github.context;
@@ -44,14 +44,17 @@ const getLastVersion = async baseBranch => {
   return version;
 };
 
-const validatePullRequest = () => {
+const validatePullRequest = async () => {
   const { context } = github;
   const { payload } = context;
 
-  const prNumber = payload.number
-  const pull_request = octokit.pulls.pull_request(context.repo, prNumber)
+  const pull_number = payload.number;
+  const pull_request = await octokit.pulls.get({
+    ...context.repo,
+    pull_number
+  });
 
-  debugJSON(pull_request)
+  debugJSON(pull_request);
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
@@ -66,9 +69,8 @@ const run = async () => {
     return;
   }
 
-
   try {
-    validatePullRequest();
+    await validatePullRequest();
     const version = await getLastVersion(baseBranch);
   } catch (e) {
     core.error(e.message);
