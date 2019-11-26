@@ -2,7 +2,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const recommendedBump = require("recommended-bump");
 const { exec } = require("@actions/exec");
-const fs = require("fs");
+// const fs = require("fs");
 const semver = require("semver");
 
 const EVENT = "pull_request";
@@ -12,7 +12,7 @@ const octokit = new github.GitHub(githubToken);
 
 const debugJSON = obj => core.debug(JSON.stringify(obj));
 
-debugJSON(github.context);
+// debugJSON(github.context);
 
 const checkEvent = (baseBranch, headBranch) => {
   const { eventName, payload } = github.context;
@@ -82,13 +82,18 @@ const getBumpIncrement = async () => {
 const bump = async (lastVersion, release) => {
   const version = semver.inc(lastVersion, release);
 
-  await exec(`yarn version --new-version ${version} --no-git-tag-version`);
-  const file = fs.readFileSync("package.json");
-  const { version: newVersion } = JSON.parse(file.toString());
+  try {
+    await exec(`yarn version --new-version ${version} --no-git-tag-version`);
+  } catch(e) {
+    core.error(e)
+    debugJSON(e)
+  }
+  // const file = fs.readFileSync("package.json");
+  // const { version: newVersion } = JSON.parse(file.toString());
 
-  core.debug(
-    `lastVersion ${lastVersion} - intended version ${version} - newVersion: ${newVersion}`
-  );
+  // core.debug(
+    // `lastVersion ${lastVersion} - intended version ${version} - newVersion: ${newVersion}`
+  // );
 };
 
 const run = async () => {
