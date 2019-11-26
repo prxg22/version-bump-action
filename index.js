@@ -43,6 +43,8 @@ const getLastVersion = async baseBranch => {
 const validatePullRequest = () => {
   const { pull_request } = github.context.payload;
 
+  core.debug(pull_request)
+  core.debug(`mergeable ${pull_request.mergeable}`)
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
