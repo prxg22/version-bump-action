@@ -14,29 +14,24 @@ const debugJSON = obj => core.debug(JSON.stringify(obj));
 
 // debugJSON(github.context);
 
-const checkEvent = (baseBranch, headBranch) => {
+const checkEvent = (base, head) => {
   const { eventName, payload } = github.context;
   const { pull_request } = payload;
 
-  const prBaseBranch = pull_request.base.ref;
-  const prHeadBranch = pull_request.head.ref;
+  const prBase = pull_request.base.ref;
+  const prHead = pull_request.head.ref;
 
-  if (
-    eventName === EVENT &&
-    prBaseBranch === baseBranch &&
-    prHeadBranch === headBranch
-  )
-    return;
+  if (eventName === EVENT && prBase === base && prHead === head) return;
 
   throw Error("Event not supported");
 };
 
-const getLastVersion = async baseBranch => {
+const getLastVersion = async base => {
   const { context } = github;
 
   const pkgFile = await octokit.repos.getContents({
     ...context.repo,
-    ref: baseBranch,
+    ref: base,
     path: "package.json"
   });
 
@@ -84,24 +79,24 @@ const bump = async (lastVersion, release) => {
 
   try {
     await exec(`yarn version --new-version ${version} --no-git-tag-version`);
-  } catch(e) {
-    core.error(e)
-    debugJSON(e)
+  } catch (e) {
+    core.error(e);
+    debugJSON(e);
   }
   // const file = fs.readFileSync("package.json");
   // const { version: newVersion } = JSON.parse(file.toString());
 
   // core.debug(
-    // `lastVersion ${lastVersion} - intended version ${version} - newVersion: ${newVersion}`
+  // `lastVersion ${lastVersion} - intended version ${version} - newVersion: ${newVersion}`
   // );
 };
 
 const run = async () => {
-  const baseBranch = core.getInput("base-branch");
-  const headBranch = core.getInput("head-branch");
+  const base = core.getInput("base-branch");
+  const head = core.getInput("head-branch");
 
   try {
-    checkEvent(baseBranch, headBranch);
+    checkEvent(base, head);
   } catch (e) {
     core.warning(e.message);
     return;
@@ -109,11 +104,11 @@ const run = async () => {
 
   try {
     await validatePullRequest();
-    core.debug('pull request validated')
+    core.debug("pull request validated");
     const release = await getRelease();
-    core.debug(`got release: ${release}`)
-    const lastVersion = await getLastVersion(baseBranch);
-    core.debug(`got last version: ${lastVersion}`)
+    core.debug(`got release: ${release}`);
+    const lastVersion = await getLastVersion(base);
+    core.debug(`got last version: ${lastVersion}`);
 
     if (!release) {
       core.warning("no version release needed!");
@@ -121,9 +116,9 @@ const run = async () => {
     }
 
     await bump(lastVersion, release);
-    core.debug(`bumped!`)
+    core.debug(`bumped!`);
   } catch (e) {
-    core.error(e.message);
+    debugJSON(e)
     core.setFailed(`Action failed due: ${e}`);
   }
 };
