@@ -9,5 +9,8 @@
     "@actions/github": "^1.1.0"
   },
   "repository": "git@github.com:prxg22/version-bump-action.git",
-  "author": "paulo giusti <paulo.giusti@lemon.energy>"
+  "author": "paulo giusti <paulo.giusti@lemon.energy>",
+  "devDependencies": {
+    "eslint": "^6.7.1"
+  }
 }
