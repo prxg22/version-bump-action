@@ -4,19 +4,19 @@ This action bumps `package.json` version and push it on the head branch
 ## Inputs
 
 ### base-branch
-  **required** *default: master*
+*required | default: master*
 
-  branch in which bumped branch will be merged in the future
+branch in which bumped branch will be merged in the future
 
 ### head-branch
-  **required** *default: develop*
+*required | default: develop*
 
-  branch in which package.json will be bumped and pushed
+branch in which package.json will be bumped and pushed
 
 ### github-token
-  **required**
+*required*
 
-  github token with access to merge in head-branch
+github token with access to merge in head-branch
 
 ### initial-version
   *default: 0.0.0*
