@@ -116,15 +116,14 @@ const run = async () => {
     await validatePullRequest();
     console.log("pull request validated");
     const release = await getRelease();
-    console.log(`got release: ${release}`);
-    const lastVersion = await getLastVersion(base, initialVersion);
-    console.log(`got last version: ${lastVersion}`);
-
     if (!release) {
-      core.warning("no version release needed!");
+      core.warning("no release needed!");
       return;
     }
 
+    console.log(`starting ${release} release`);
+    const lastVersion = await getLastVersion(base, initialVersion);
+    console.log(`got last version: ${lastVersion}`);
     const version = await bump(lastVersion, release);
     console.log(`bumped to version ${version}!`);
     await pushBumpedVersion(version, head);
