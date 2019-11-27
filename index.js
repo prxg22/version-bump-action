@@ -55,14 +55,14 @@ const validatePullRequest = async () => {
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
-const validateCommitMessage = (message) => {
-  if (typeof message !== 'string') return false
+const validateCommitMessage = message => {
+  if (typeof message !== "string") return false;
 
-  const [ header = message ] = message.split('\n\n')
-  const commitRegex = /^(feat|fix|chore|refactor|style|test|docs)(?:\((.+)\))?: (.+)$/g
+  const [header = message] = message.split("\n\n");
+  const commitRegex = /^(feat|fix|chore|refactor|style|test|docs)(?:\((.+)\))?: (.+)$/g;
 
   return commitRegex.test(header.trim());
-}
+};
 
 const getRelease = async () => {
   const { context } = github;
@@ -77,7 +77,7 @@ const getRelease = async () => {
 
   const messages = commits
     .map(({ commit }) => commit.message)
-    .filter(validateCommitMessage)
+    .filter(validateCommitMessage);
 
   const { increment: release } = recommendedBump(messages);
 
@@ -102,18 +102,23 @@ const pushBumpedVersion = async (version, head) => {
   const actor = process.env.GITHUB_ACTOR;
   const repository = process.env.GITHUB_REPOSITORY;
 
+  await exec("git diff --exit-code; GIT_DIRTY=$?");
+  const isDirty = process.env.GIT_DIRTY;
+  if (!isClean) {
+    core.warning(`version ${version} was already pushed`);
+    return;
+  }
+
   await exec(`git commit -m "chore: Released version ${version}" -a`);
-
   const remote = `https://${actor}:${githubToken}@github.com/${repository}.git`;
-
   await exec(`git push "${remote}" HEAD:${head}`);
 };
 
-const configGit = async (head) => {
+const configGit = async head => {
   await exec(`git config --local user.email "action@github.com"`);
   await exec(`git config --local user.name "Version Bump Action"`);
   await exec(`git checkout ${head}`);
-}
+};
 
 const run = async () => {
   const base = core.getInput("base-branch");
@@ -128,7 +133,7 @@ const run = async () => {
   }
 
   try {
-    await configGit(head)
+    await configGit(head);
     await validatePullRequest();
     console.log("pull request validated");
     const release = await getRelease();
