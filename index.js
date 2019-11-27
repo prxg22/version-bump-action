@@ -79,6 +79,7 @@ const getRelease = async () => {
     .map(({ commit }) => commit.message)
     .filter(validateCommitMessage)
 
+  console.log(`messages:`, messages)
   const { increment: release } = recommendedBump(messages);
 
   return release;
