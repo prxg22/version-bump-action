@@ -9,7 +9,6 @@ const EVENT = "pull_request";
 const githubToken = core.getInput("github-token");
 const octokit = new github.GitHub(githubToken);
 
-
 const checkEvent = (base, head) => {
   const { eventName, payload } = github.context;
   const { pull_request } = payload;
@@ -94,12 +93,11 @@ const pushBumpedVersion = async (version, head) => {
 
   await exec(`git config --local user.email "action@github.com"`);
   await exec(`git config --local user.name "GitHub Action"`);
-  await exec(`git commit -m "Release version ${version}" -a`);
+  await exec(`git commit -m "chore: Released version ${version}" -a`);
 
-  const remote =
-    `https://${actor}:${githubToken}@github.com/${repository}.git`;
+  const remote = `https://${actor}:${githubToken}@github.com/${repository}.git`;
 
-  await exec(`git push "${remote}" HEAD:${head}`)
+  await exec(`git push "${remote}" HEAD:${head}`);
 };
 
 const run = async () => {
@@ -116,11 +114,11 @@ const run = async () => {
 
   try {
     await validatePullRequest();
-    core.debug("pull request validated");
+    console.log("pull request validated");
     const release = await getRelease();
-    core.debug(`got release: ${release}`);
+    console.log(`got release: ${release}`);
     const lastVersion = await getLastVersion(base, initialVersion);
-    core.debug(`got last version: ${lastVersion}`);
+    console.log(`got last version: ${lastVersion}`);
 
     if (!release) {
       core.warning("no version release needed!");
@@ -128,8 +126,9 @@ const run = async () => {
     }
 
     const version = await bump(lastVersion, release);
-    core.debug(`bumped to version ${version}!`);
+    console.log(`bumped to version ${version}!`);
     await pushBumpedVersion(version, head);
+    console.log(`version ${version} pushed!`);
   } catch (e) {
     core.setFailed(`Action failed due: ${e}`);
   }
