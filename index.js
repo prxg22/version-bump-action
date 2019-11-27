@@ -102,13 +102,13 @@ const pushBumpedVersion = async (version, head) => {
   const actor = process.env.GITHUB_ACTOR;
   const repository = process.env.GITHUB_REPOSITORY;
 
-  await exec("git diff --help");
   try {
     await exec("git diff --quiet");
     await exec("GIT_DIRTY=$?");
   } catch (e) {
     console.error(e)
   }
+  
   console.log(process.env)
   const isDirty = process.env.GIT_DIRTY;
   if (!isDirty) {
