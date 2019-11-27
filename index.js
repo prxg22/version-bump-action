@@ -102,14 +102,18 @@ const pushBumpedVersion = async (version, head) => {
   const actor = process.env.GITHUB_ACTOR;
   const repository = process.env.GITHUB_REPOSITORY;
 
-  await exec(`git config --local user.email "action@github.com"`);
-  await exec(`git config --local user.name "GitHub Action"`);
   await exec(`git commit -m "chore: Released version ${version}" -a`);
 
   const remote = `https://${actor}:${githubToken}@github.com/${repository}.git`;
 
   await exec(`git push "${remote}" HEAD:${head}`);
 };
+
+const configGit = async (head) => {
+  await exec(`git config --local user.email "action@github.com"`);
+  await exec(`git config --local user.name "Version Bump Action"`);
+  await exec(`git checkout ${head}`);
+}
 
 const run = async () => {
   const base = core.getInput("base-branch");
@@ -124,6 +128,7 @@ const run = async () => {
   }
 
   try {
+    await configGit(head)
     await validatePullRequest();
     console.log("pull request validated");
     const release = await getRelease();
