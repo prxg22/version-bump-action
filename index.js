@@ -112,12 +112,13 @@ const pushBumpedVersion = async (version, head) => {
 
   if (!isDirty) {
     core.warning(`version ${version} was already pushed`);
-    return;
+    return false;
   }
 
   await exec(`git commit -m "chore: Released version ${version}" -a`);
   const remote = `https://${actor}:${githubToken}@github.com/${repository}.git`;
   await exec(`git push "${remote}" HEAD:${head}`);
+  return true
 };
 
 const configGit = async head => {
@@ -133,12 +134,6 @@ const run = async () => {
 
   try {
     checkEvent(base, head);
-  } catch (e) {
-    core.warning(e.message);
-    return;
-  }
-
-  try {
     await configGit(head);
     await validatePullRequest();
     console.log("pull request validated");
@@ -153,10 +148,10 @@ const run = async () => {
     console.log(`got last version: ${lastVersion}`);
     const version = await bump(lastVersion, release);
     console.log(`bumped to version ${version}!`);
-    await pushBumpedVersion(version, head);
-    console.log(`version ${version} pushed!`);
+    const pushed = await pushBumpedVersion(version, head);
+    if (pushed) console.log(`version ${version} pushed!`);
   } catch (e) {
-    core.setFailed(`Action failed due: ${e}`);
+    core.setFailed(e);
   }
 };
 
