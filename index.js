@@ -102,15 +102,14 @@ const pushBumpedVersion = async (version, head) => {
   const actor = process.env.GITHUB_ACTOR;
   const repository = process.env.GITHUB_REPOSITORY;
 
+  let isDirty
   try {
     await exec("git diff --exit-code");
+    isDirty = false
   } catch (e) {
-    console.error(e)
+    isDirty = true
   }
 
-  await exec("GIT_DIRTY=$?");
-  console.log(process.env)
-  const isDirty = process.env.GIT_DIRTY;
   if (!isDirty) {
     core.warning(`version ${version} was already pushed`);
     return;
