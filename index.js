@@ -9,10 +9,6 @@ const EVENT = "pull_request";
 const githubToken = core.getInput("github-token");
 const octokit = new github.GitHub(githubToken);
 
-const debugJSON = obj => core.debug(JSON.stringify(obj));
-
-debugJSON(github.context);
-debugJSON(process.env);
 
 const checkEvent = (base, head) => {
   const { eventName, payload } = github.context;
@@ -57,7 +53,6 @@ const validatePullRequest = async () => {
     pull_number
   });
 
-  debugJSON(pull_request);
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
@@ -90,7 +85,6 @@ const bump = async (lastVersion, release) => {
     return bumped;
   } catch (e) {
     core.error(e);
-    debugJSON(e);
   }
 };
 
@@ -137,7 +131,6 @@ const run = async () => {
     core.debug(`bumped to version ${version}!`);
     await pushBumpedVersion(version, head);
   } catch (e) {
-    debugJSON(e);
     core.setFailed(`Action failed due: ${e}`);
   }
 };
