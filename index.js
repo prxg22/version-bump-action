@@ -55,6 +55,15 @@ const validatePullRequest = async () => {
   if (!pull_request.mergeable) throw Error(`PR isn't mergeable`);
 };
 
+const validateCommitMessage = (message) => {
+  if (typeof message !== 'string') return false
+
+  const [ header = message ] = message.split('\n\n')
+  const commitRegex = /^(feat|fix|chore|refactor|style|test|docs)(?:\((.+)\))?: \w+$/g
+
+  return commitRegex.test(header.trim());
+}
+
 const getRelease = async () => {
   const { context } = github;
   const { payload } = context;
@@ -66,7 +75,9 @@ const getRelease = async () => {
     pull_number
   });
 
-  const messages = commits.map(({ commit }) => commit.message);
+  const messages = commits
+    .map(({ commit }) => commit.message)
+    .filter(validateCommitMessage)
 
   const { increment: release } = recommendedBump(messages);
 
