@@ -14,7 +14,7 @@ inputs:
     default: 'develop'
 
   github-token:
-    description: 'github token with access to merge in release-branch'
+    description: 'github token with access to merge in head-branch'
     required: true
 
   initial-version:
