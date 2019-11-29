@@ -88,7 +88,8 @@ const bump = async (lastVersion, release) => {
   const version = semver.inc(lastVersion, release);
 
   try {
-    await exec(`yarn version --new-version ${version} --no-git-tag-version`);
+    // npm version --new-version
+    await exec(`npm version --new-version ${version} --git-tag-version false`);
     const file = fs.readFileSync("package.json");
     const { version: bumped } = JSON.parse(file.toString());
 
