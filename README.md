@@ -1,30 +1,35 @@
 # version-bump-action
+
 This action bumps `package.json` version and push it on the head branch
 
 ## Inputs
 
+### github-token
+
+_required_
+
+github token with access to merge in head-branch
+
 ### base-branch
-*required | default: master*
+
+_default: master_
 
 branch in which bumped branch will be merged in the future
 
 ### head-branch
-*required | default: develop*
+
+_default: develop_
 
 branch in which package.json will be bumped and pushed
 
-### github-token
-*required*
-
-github token with access to merge in head-branch
-
 ### initial-version
-  *default: 0.0.0*
 
-  initial version used if base-branch doesn't have package.json
+_default: 0.0.0_
 
+initial version used if base-branch doesn't have package.json
 
 ## Example usage
+
 ```yml
 uses: prxg22/version-bump-action@master
 with:

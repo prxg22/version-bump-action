@@ -6,13 +6,13 @@
   "repository": "git@github.com:prxg22/version-bump-action.git",
   "author": "prxg22 <prxg22@gmail.com>",
   "dependencies": {
-    "@actions/core": "1.2.x",
-    "@actions/exec": "1.0.x",
+    "@actions/core": "^1.2.6",
+    "@actions/exec": "^1.0.4",
     "@actions/github": "1.1.x",
     "recommended-bump": "1.5.x",
     "semver": "6.3.x"
   },
   "devDependencies": {
-    "eslint": "^6.7.1"
+    "eslint": "^6.8.0"
   }
 }
