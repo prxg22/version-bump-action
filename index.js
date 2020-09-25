@@ -92,8 +92,7 @@ const bump = async (lastVersion, release) => {
   const version = semver.inc(lastVersion, release)
 
   try {
-    // npm version --new-version
-    await exec(`npm version --new-version ${version} --git-tag-version false`)
+    await exec(`npm version --new-version ${version} --allow-same-version`)
     const file = fs.readFileSync('package.json')
     const { version: bumped } = JSON.parse(file.toString())
 
@@ -108,12 +107,6 @@ const configGit = async head => {
   await exec(`git config --local user.email "action@github.com"`)
   await exec(`git config --local user.name "Version Bump Action"`)
   await exec(`git checkout ${head}`)
-}
-
-const createTag = async version => {
-  const tag = `v${version}`
-  await exec(`git tag -a v${version}`)
-  return tag
 }
 
 const pushBumpedVersionAndTag = async (version, head) => {
@@ -156,8 +149,6 @@ const run = async () => {
     console.log(`got last version: ${lastVersion}`)
     const version = await bump(lastVersion, release)
     console.log(`bumped to version ${version}!`)
-    const tag = await createTag(version)
-    console.log(`tag ${tag} created!`)
     const pushed = await pushBumpedVersionAndTag(version, head)
     if (pushed) console.log(`version ${version} pushed!`)
   } catch (e) {
