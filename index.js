@@ -111,7 +111,9 @@ const configGit = async head => {
 }
 
 const createTag = async version => {
+  const tag = `v${version}`
   await exec(`git tag -a v${version}`)
+  return tag
 }
 
 const pushBumpedVersionAndTag = async (version, head) => {
@@ -154,7 +156,8 @@ const run = async () => {
     console.log(`got last version: ${lastVersion}`)
     const version = await bump(lastVersion, release)
     console.log(`bumped to version ${version}!`)
-    createTag(version)
+    const tag = await createTag(version)
+    console.log(`tag ${tag} created!`)
     const pushed = await pushBumpedVersionAndTag(version, head)
     if (pushed) console.log(`version ${version} pushed!`)
   } catch (e) {
