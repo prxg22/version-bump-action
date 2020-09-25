@@ -103,6 +103,13 @@ const bump = async (lastVersion, release) => {
   }
 }
 
+const configGit = async head => {
+  await exec(`git fetch ${remote} ${head}:${head}`)
+  await exec(`git config --local user.email "action@github.com"`)
+  await exec(`git config --local user.name "Version Bump Action"`)
+  await exec(`git checkout ${head}`)
+}
+
 const pushBumpedVersion = async (version, head) => {
   let isDirty
   try {
@@ -120,13 +127,6 @@ const pushBumpedVersion = async (version, head) => {
   await exec(`git commit -m "chore: Released version ${version}" -a`)
   await exec(`git push "${remote}" HEAD:${head}`)
   return true
-}
-
-const configGit = async head => {
-  await exec(`git fetch ${remote} ${head}`)
-  await exec(`git config --local user.email "action@github.com"`)
-  await exec(`git config --local user.name "Version Bump Action"`)
-  await exec(`git checkout ${head}`)
 }
 
 const run = async () => {
