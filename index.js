@@ -7,6 +7,10 @@ const fs = require('fs')
 const EVENT = 'pull_request'
 
 const githubToken = core.getInput('github-token')
+const actor = process.env.GITHUB_ACTOR
+const repository = process.env.GITHUB_REPOSITORY
+const remote = `https://${actor}:${githubToken}@github.com/${repository}.git`
+
 const octokit = new github.GitHub(githubToken)
 
 const checkEvent = (base, head) => {
@@ -100,9 +104,6 @@ const bump = async (lastVersion, release) => {
 }
 
 const pushBumpedVersion = async (version, head) => {
-  const actor = process.env.GITHUB_ACTOR
-  const repository = process.env.GITHUB_REPOSITORY
-
   let isDirty
   try {
     await exec('git diff --exit-code')
@@ -117,13 +118,12 @@ const pushBumpedVersion = async (version, head) => {
   }
 
   await exec(`git commit -m "chore: Released version ${version}" -a`)
-  const remote = `https://${actor}:${githubToken}@github.com/${repository}.git`
   await exec(`git push "${remote}" HEAD:${head}`)
   return true
 }
 
 const configGit = async head => {
-  await exec(`git fetch --all`)
+  await exec(`git fetch ${remote} ${head}`)
   await exec(`git config --local user.email "action@github.com"`)
   await exec(`git config --local user.name "Version Bump Action"`)
   await exec(`git checkout ${head}`)
