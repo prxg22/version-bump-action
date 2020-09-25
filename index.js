@@ -110,7 +110,11 @@ const configGit = async head => {
   await exec(`git checkout ${head}`)
 }
 
-const pushBumpedVersion = async (version, head) => {
+const createTag = async version => {
+  await exec(`git tag -a v${version}`)
+}
+
+const pushBumpedVersionAndTag = async (version, head) => {
   let isDirty
   try {
     await exec('git diff --exit-code')
@@ -125,7 +129,7 @@ const pushBumpedVersion = async (version, head) => {
   }
 
   await exec(`git commit -m "chore: Released version ${version}" -a`)
-  await exec(`git push "${remote}" HEAD:${head}`)
+  await exec(`git push --tags "${remote}" HEAD:${head}`)
   return true
 }
 
@@ -150,7 +154,8 @@ const run = async () => {
     console.log(`got last version: ${lastVersion}`)
     const version = await bump(lastVersion, release)
     console.log(`bumped to version ${version}!`)
-    const pushed = await pushBumpedVersion(version, head)
+    createTag(version)
+    const pushed = await pushBumpedVersionAndTag(version, head)
     if (pushed) console.log(`version ${version} pushed!`)
   } catch (e) {
     core.setFailed(e)
