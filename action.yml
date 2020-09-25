@@ -1,6 +1,5 @@
-name: 'automate-release'
+name: 'version-bump-action'
 description: 'bump package.json version and commit it'
-
 
 inputs:
   base-branch:

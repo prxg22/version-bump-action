@@ -13,6 +13,6 @@ jobs:
       - name: build
         run: yarn --prod
       - name: bump version and merge it on develop
-        uses: prxg22/version-bump-action@master
+        uses: ./version-bump-action
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
