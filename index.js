@@ -91,15 +91,13 @@ const getRelease = async () => {
 const bump = async (lastVersion, release) => {
   const version = semver.inc(lastVersion, release)
 
-  try {
-    await exec(`npm version --new-version ${version} --allow-same-version`)
-    const file = fs.readFileSync('package.json')
-    const { version: bumped } = JSON.parse(file.toString())
+  await exec(
+    `npm version --new-version ${version} --allow-same-version -m "Release v%s"`,
+  )
+  const file = fs.readFileSync('package.json')
+  const { version: bumped } = JSON.parse(file.toString())
 
-    return bumped
-  } catch (e) {
-    core.error(e)
-  }
+  return bumped
 }
 
 const configGit = async head => {
@@ -110,22 +108,8 @@ const configGit = async head => {
 }
 
 const pushBumpedVersionAndTag = async (version, head) => {
-  let isDirty
-  try {
-    await exec('git diff --exit-code')
-    isDirty = false
-  } catch (e) {
-    isDirty = true
-  }
-
-  if (!isDirty) {
-    core.warning(`version ${version} was already pushed`)
-    return false
-  }
-
-  await exec(`git commit -m "chore: Released version ${version}" -a`)
-  await exec(`git push --tags "${remote}" HEAD:${head}`)
-  return true
+  await exec(`git push "${remote}" HEAD:${head}`)
+  await exec(`git push -f --tags`)
 }
 
 const run = async () => {
@@ -149,8 +133,8 @@ const run = async () => {
     console.log(`got last version: ${lastVersion}`)
     const version = await bump(lastVersion, release)
     console.log(`bumped to version ${version}!`)
-    const pushed = await pushBumpedVersionAndTag(version, head)
-    if (pushed) console.log(`version ${version} pushed!`)
+    await pushBumpedVersionAndTag(version, head)
+    console.log(`version ${version} pushed!`)
   } catch (e) {
     core.setFailed(e)
   }
