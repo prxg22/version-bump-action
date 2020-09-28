@@ -91,17 +91,13 @@ const getRelease = async () => {
 const bump = async (lastVersion, release) => {
   const version = semver.inc(lastVersion, release)
 
-  try {
-    await exec(
-      `npm version --new-version ${version} --allow-same-version -m 'Release v%s'`,
-    )
-    const file = fs.readFileSync('package.json')
-    const { version: bumped } = JSON.parse(file.toString())
+  await exec(
+    `npm version --new-version ${version} --allow-same-version -m "Release v%s"`,
+  )
+  const file = fs.readFileSync('package.json')
+  const { version: bumped } = JSON.parse(file.toString())
 
-    return bumped
-  } catch (e) {
-    core.error(e)
-  }
+  return bumped
 }
 
 const configGit = async head => {
