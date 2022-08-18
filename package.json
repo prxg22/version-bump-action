@@ -6,7 +6,7 @@
   "repository": "git@github.com:prxg22/version-bump-action.git",
   "author": "prxg22 <prxg22@gmail.com>",
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.9.1",
     "@actions/exec": "^1.0.4",
     "@actions/github": "1.1.x",
     "recommended-bump": "1.5.x",
